@@ -9,11 +9,11 @@ import { Router } from '@angular/router';
 export class ErrorHandler implements HttpInterceptor {
     constructor(
         private router: Router
-        ) { }
+    ) { }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(request).pipe(catchError(err => {
-            this.router.navigateByUrl('/error');
+            this.router.navigate(['/error'], { queryParams: { err: err.message } });
             return throwError(err);
         }));
     }

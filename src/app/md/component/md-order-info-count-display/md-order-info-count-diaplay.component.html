@@ -1,0 +1,51 @@
+<div class="scrollbar">
+    <nz-spin [nzSpinning]="isSpinning" nzTip="Loading...">
+        <div class="condition-area error-area" *ngFor="let item of errorMessageInfo | keyvalue">
+            <label>{{item.key}}：{{item.value}}</label>
+        </div>
+        <div class="condition-area">
+            <h4>店舗発注情報検索結果表示画面</h4>
+            <p>設定した条件での検索結果を表示する</p>
+        </div>
+        <hr />
+        <div class="condition-area">
+            <h4>実施内容</h4>
+            <label nz-radio ngModel="true">発注情報検索結果表示（集計表示）</label>
+        </div>
+        <hr />
+        <div class="scroll-table">
+            <nz-table #nzTable nzBordered [nzData]="listOfDisplayData" [nzPageSize]="17" [nzVirtualItemSize]="20">
+                <thead (nzSortChange)="sort($event)" nzSingleSort>
+                    <tr>
+                        <th nzAlign="center" nzShowSort nzSortKey="classification2CodeLog">グループコード</th>
+                        <th nzAlign="center" nzShowSort nzSortKey="classification2NameKanjiLog">グループ名称</th>
+                        <th nzAlign="center" nzShowSort nzSortKey="classification3CodeLog">部門コード</th>
+                        <th nzAlign="center" nzShowSort nzSortKey="classification3NameKanjiLog">部門名称</th>
+                        <th nzAlign="center" nzShowSort nzSortKey="classification4CodeLog">カテゴリコード</th>
+                        <th nzAlign="center" nzShowSort nzSortKey="classification4NameKanjiLog">カテゴリ名称</th>
+                        <th nzAlign="center" nzShowSort nzSortKey="totalOrderNum">発注数</th>
+                        <th nzAlign="center" nzShowSort nzSortKey="totalOrderPrc">発注額</th>
+                        <th nzAlign="center" nzShowSort nzSortKey="valuePct">値入率</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of nzTable.data">
+                        <td>{{ data.classification2CodeLog }}</td>
+                        <td>{{ data.classification2NameKanjiLog }}</td>
+                        <td>{{ data.classification3CodeLog }}</td>
+                        <td>{{ data.classification3NameKanjiLog }}</td>
+                        <td>{{ data.classification4CodeLog }}</td>
+                        <td>{{ data.classification4NameKanjiLog }}</td>
+                        <td nzAlign="right">{{ data.totalOrderNum }}</td>
+                        <td nzAlign="right">{{ data.totalOrderPrc }}</td>
+                        <td nzAlign="right">{{ data.valuePct }}</td>
+                    </tr>
+                </tbody>
+            </nz-table>
+            <div class="button-margin">
+                <button nz-button nzType="default" class="nz-button" (click)="goBack()">戻る</button>
+                <button nz-button nzType="default" class="nz-button" (click)="csvExport($event)">CSV出力</button>
+            </div>
+        </div>
+    </nz-spin>
+</div>

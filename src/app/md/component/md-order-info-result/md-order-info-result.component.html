@@ -1,0 +1,66 @@
+<div class="scrollbar">
+    <nz-spin [nzSpinning]="isSpinning" nzTip="Loading...">
+        <div class="condition-area error-area" *ngFor="let item of errorMessageInfo | keyvalue">
+            <label>{{item.key}}：{{item.value}}</label>
+        </div>
+        <div class="condition-area">
+            <h4>店舗発注情報検索結果表示画面</h4>
+            <p>設定した条件での検索結果を表示する</p>
+        </div>
+        <hr />
+        <div class="condition-area">
+            <h4>実施内容</h4>
+            <label nz-radio ngModel="true">発注情報検索結果表示（商品表示）</label>
+        </div>
+        <hr />
+        <div class="scroll-table">
+            <nz-table #nzTable nzBordered [nzData]="listOfDisplayData" [nzPageSize]="17" [nzVirtualItemSize]="20"
+                [nzScroll]="{x:'100%'}">
+                <thead (nzSortChange)="sort($event)" nzSingleSort>
+                    <tr>
+                        <th nzAlign="center" nzShowSort nzSortKey="groupCode">グループコード</th>
+                        <th nzAlign="center" nzShowSort nzSortKey="groupName">グループ名称</th>
+                        <th nzAlign="center" nzShowSort nzSortKey="bumonCode">部門コード</th>
+                        <th nzAlign="center" nzShowSort nzSortKey="bumonName">部門名称</th>
+                        <th nzAlign="center" nzShowSort nzSortKey="categoryCode">カテゴリコード</th>
+                        <th nzAlign="center" nzShowSort nzSortKey="categoryName">カテゴリ名称</th>
+                        <th nzAlign="center" nzShowSort nzSortKey="custermorName">取引先</th>
+                        <th nzAlign="center" nzShowSort nzSortKey="productCode">品番</th>
+                        <th nzAlign="center" nzShowSort nzSortKey="janCode">JAN</th>
+                        <th nzAlign="center" nzShowSort nzSortKey="janName">商品名</th>
+                        <th nzAlign="center" nzShowSort nzSortKey="colourName">カラー</th>
+                        <th nzAlign="center" nzShowSort nzSortKey="sizeName">サイズ</th>
+                        <th nzAlign="center" nzShowSort nzSortKey="orderSnum">発注売価</th>
+                        <th nzAlign="center" nzShowSort nzSortKey="orderDate">発注日</th>
+                        <th nzShowSort nzSortKey="deliveryDate">納品日</th>
+                        <th nzAlign="center" nzShowSort nzSortKey="orderNum">発注数</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of nzTable.data">
+                        <td>{{ data.groupCode }}</td>
+                        <td>{{ data.groupName }}</td>
+                        <td>{{ data.bumonCode }}</td>
+                        <td>{{ data.bumonName }}</td>
+                        <td>{{ data.categoryCode }}</td>
+                        <td>{{ data.categoryName }}</td>
+                        <td>{{ data.custermorName }}</td>
+                        <td>{{ data.productCode }}</td>
+                        <td>{{ data.janCode }}</td>
+                        <td>{{ data.janName }}</td>
+                        <td>{{ data.colourName }}</td>
+                        <td>{{ data.sizeName }}</td>
+                        <td nzAlign="right">{{ data.orderSnum }}</td>
+                        <td>{{ data.orderDate }}</td>
+                        <td>{{ data.deliveryDate }}</td>
+                        <td nzAlign="right">{{ data.orderNum }}</td>
+                    </tr>
+                </tbody>
+            </nz-table>
+            <div class="button-margin">
+                <button nz-button nzType="default" class="nz-button" (click)="goBack()">戻る</button>
+                <button nz-button nzType="default" class="nz-button" (click)="csvExport($event)">CSV出力</button>
+            </div>
+        </div>
+    </nz-spin>
+</div>

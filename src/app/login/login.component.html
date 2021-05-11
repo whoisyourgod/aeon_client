@@ -1,0 +1,84 @@
+<div>
+    <label>MD:</label>
+    <form nz-form [formGroup]="MdForm" (ngSubmit)="submitForMd()">
+        <nz-form-item>
+            <nz-form-label [nzSm]="2" [nzXs]="24" nzFor="personId">従業員ID</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24">
+                <input nz-input formControlName="personId" />
+                <button nz-button nzType="primary">submit</button>
+            </nz-form-control>
+        </nz-form-item>
+    </form>
+</div>
+<div>
+    <label>HR:</label>
+    <form nz-form [formGroup]="HrForm" (ngSubmit)="submitForHr()">
+        <nz-form-item>
+            <nz-form-label [nzSm]="2" [nzXs]="24" nzFor="personId">ログイン従業員ID</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24">
+                <input nz-input formControlName="personId" />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSm]="2" [nzXs]="24" nzFor="conmpanyId">ログイン法人ID</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24">
+                <input nz-input formControlName="conmpanyId" />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSm]="2" [nzXs]="24" nzFor="teamId">チームID</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24">
+                <input nz-input formControlName="teamId" />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSm]="2" [nzXs]="24" nzFor="menuKbn">メニュー区分</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24">
+                <input nz-input formControlName="menuKbn" />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSm]="2" [nzXs]="24" nzFor="groupId">グループID</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24">
+                <input nz-input formControlName="groupId" />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSm]="2" [nzXs]="24" nzFor="targetPersonId">処理対象者人ID</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24">
+                <input nz-input formControlName="targetPersonId" />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSm]="2" [nzXs]="24" nzFor="targetConmpanyId">処理対象法人ID</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24">
+                <input nz-input formControlName="targetConmpanyId" />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSm]="2" [nzXs]="24" nzFor="targetMonth">対象月度</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-month-picker [nzFormat]="monthFormat" formControlName="targetMonth"
+                    (ngModelChange)="monthClick($event)">
+                </nz-month-picker>
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSm]="2" [nzXs]="24" nzFor="startDate">対象期間開始日</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-date-picker [nzDisabled]="true" [nzFormat]="dateFormat" formControlName="startDate"
+                    nzPlaceHolder="対象期間開始日">
+                </nz-date-picker>
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSm]="2" [nzXs]="24" nzFor="endDate">対象期間終了日</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-date-picker [nzDisabled]="true" [nzFormat]="dateFormat" formControlName="endDate"
+                    nzPlaceHolder="対象期間終了日">
+                </nz-date-picker>
+                <button nz-button nzType="primary">submit</button>
+            </nz-form-control>
+        </nz-form-item>
+    </form>
+</div>

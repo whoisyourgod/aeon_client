@@ -1,0 +1,198 @@
+<div class="body">
+    <div class="header">
+        <div class="tag"></div>
+        <h3 class="title">勤務実績修正／登録(個人別)</h3>
+    </div>
+
+    <div class="condition-area error-area" *ngFor="let item of errorMessageInfo | keyvalue">
+        <label>{{item.key}}：{{item.value}}</label>
+    </div>
+
+    <div class="content">
+        <div class="first">
+            <div>
+                <button nz-button [disabled]="!disabledFlag">戻る</button>
+                <button nz-button [disabled]="!disabledFlag" (click)="clear()">クリア</button>
+            </div>
+            <div class="time">
+                <button (click)="prevMonthClick()" [disabled]="!disabledFlag || monthDisabled('prev')"
+                    class="button-link">前月</button>
+                <span>{{targetMonth?.toString() | yearMonth}}</span>
+                <button (click)="nextMonthClick()" [disabled]="!disabledFlag || monthDisabled('next')"
+                    class="button-link">次月</button>
+            </div>
+            <div>
+                <button nz-button [disabled]="!disabledFlag" (click)="save()">実績確定</button>
+                <button nz-button [disabled]="!disabledFlag">ヘルプ</button>
+            </div>
+        </div>
+
+        <p><span>{{userInfo?.companyName}}</span> <span>{{userInfo?.companyHombuName}}</span>
+            <span>{{userInfo?.jigyobuName}}</span> <span>{{userInfo?.bstName}}</span> <span>{{userInfo?.groupName}}</span>
+        </p>
+        <p><span>{{userInfo?.personCode}}</span><span>{{userInfo?.personName}}</span></p>
+        <p><span class="red">対象月度では複数の法人で勤務をしています。</span> 法人選択：<a href="javascript:void(0)">イオン</a>&nbsp;B社</p>
+    </div>
+    <div>
+        <nz-table nzTemplateMode #nestedTable [nzNoResult]="nzNoResult" [nzData]="listOfAttendanceData"
+            [nzFrontPagination]="false" [nzLoading]="isSpinning">
+            <thead>
+                <tr>
+                    <th width=50 rowspan="2">対象</th>
+                    <th width=50 rowspan="2">確定状況</th>
+                    <th rowspan="2">日付</th>
+                    <th width=110 rowspan="2">勤務計画</th>
+                    <th width=110 colspan="2">スキャン</th>
+                    <th width=288 colspan="4">勤務実績</th>
+                    <th width=80 rowspan="2">私用外出時間</th>
+                    <th width=80 rowspan="2">残業内休憩時間</th>
+                    <th width=70 rowspan="2">計画内時間</th>
+                    <th width=70 rowspan="2">計画外時間</th>
+                    <th width=62 rowspan="2">確定 区分</th>
+                </tr>
+                <tr>
+                    <th>始業</th>
+                    <th>終業</th>
+                    <th width=72>始業</th>
+                    <th width=72>状態</th>
+                    <th width=72>終業</th>
+                    <th width=72>状態</th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th>合計</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th>{{privateoutNCount}}</th>
+                    <th>{{overtimerestNConur}}</th>
+                    <th>{{workinplanNConur}}</th>
+                    <th>{{workoverplanNConur}}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-template ngFor let-data let-i="index" let-odd="odd" let-even="even" [ngForOf]="nestedTable.data">
+                    <tr [ngStyle]="{'background-color': bgColorLogic(data,0) }">
+                        <td nzShowCheckbox class="align-center" [nzChecked]="mapOfCheckedId[data.targetDate]"
+                            (nzCheckedChange)="selectedItems($event, data, data.targetDate)"
+                            [nzDisabled]="!disabledFlag || disabledLinmuKaisuFlag(data,0)"></td>
+                        <td class="align-center"><span
+                                [ngClass]="{'red': dailyApprovalStatus(data, 0) == '仮' }">{{dailyApprovalStatus(data,
+                                0)}}</span></td>
+                        <td *ngIf="tgtdateLabel(data,0)">{{ data.actualInfoList[0]?.tgtdate | monthDay }}</td>
+                        <td *ngIf="!tgtdateLabel(data,0)"><a href="javascript:void(0)"
+                                class="linkcolor">{{data.actualInfoList[0]?.tgtdate | monthDay }}</a></td>
+                        <td class="align-left"><span> {{planStartEndTime(data, 0)}} </span></td>
+                        <td>{{ data.timeCardInfoList[0]?.attStTime | slice: 11:16 }}</td>
+                        <td>{{ data.timeCardInfoList[0]?.attEdTime | slice: 11:16 }}</td>
+
+                        <td *ngIf=" data.actualInfoList != null && data.actualInfoList.length > 0">
+                            <input nz-input type="time" pattern="[0-9]{2}:[0-9]{2}" required
+                                [disabled]="!disabledFlag || disabledLinmuKaisuFlag(data,0)"
+                                [(ngModel)]="data.actualInfoList[0].attStartTime" (change)="monthChange()" />
+                        </td>
+                        <td *ngIf=" data.actualInfoList == null || data.actualInfoList.length == 0">
+                        </td>
+
+                        <td class="align-center">{{data.actualInfoList[0]?.attStartStatus}} </td>
+
+                        <td *ngIf=" data.actualInfoList?.length > 0"> <input nz-input type="time"
+                                pattern="[0-9]{2}:[0-9]{2}" required [disabled]="!disabledFlag || 
+                        disabledLinmuKaisuFlag(data,0)" [(ngModel)]="data.actualInfoList[0].attEndTime"
+                                (change)="monthChange()" /> </td>
+                        <td *ngIf=" data.actualInfoList?.length == 0"> </td>
+
+                        <td class="align-center">{{ data.actualInfoList[0]?.attEndStatus }}</td>
+
+                        <td>{{ data.actualInfoList[0]?.privateoutN }}</td>
+                        <td>{{ data.actualInfoList[0]?.overtimerestN }}</td>
+                        <td>{{ data.actualInfoList[0]?.workinplanN }}</td>
+                        <td>{{ data.actualInfoList[0]?.workoverplanN }}</td>
+                        <td class="align-left">{{ data.actualInfoList[0]?.determinedKbn }}</td>
+
+
+                    </tr>
+                    <tr *ngIf=" data.actualInfoList?.length > 1"
+                        [ngStyle]="{'background-color': bgColorLogic(data,1) }">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="align-left"><span> {{planStartEndTime(data, 1)}} </span></td>
+
+                        <td>{{ data.timeCardInfoList[1]?.attStTime | slice: 11:16 }}</td>
+                        <td>{{ data.timeCardInfoList[1]?.attEdTime | slice: 11:16 }}</td>
+
+                        <td *ngIf="data.actualInfoList != null"> <input nz-input type="time" pattern="[0-9]{2}:[0-9]{2}"
+                                required [disabled]="!disabledFlag || 
+                        disabledLinmuKaisuFlag(data,1)" [(ngModel)]="data.actualInfoList[1].attStartTime "
+                                (change)="monthChange()" /> </td>
+                        <td *ngIf="data.actualInfoList == null"> </td>
+
+                        <td class="align-center">{{ data.actualInfoList[1].attStartStatus }}</td>
+
+                        <td *ngIf="data.actualInfoList != null"> <input nz-input type="time" pattern="[0-9]{2}:[0-9]{2}"
+                                required [disabled]="!disabledFlag || 
+                        disabledLinmuKaisuFlag(data,1)" [(ngModel)]="data.actualInfoList[1].attEndTime "
+                                (change)="monthChange()" /> </td>
+                        <td *ngIf="data.actualInfoList == null"> </td>
+
+                        <td class="align-center">{{ data.actualInfoList[1]?.attEndStatus }}</td>
+
+                        <td>{{ data.actualInfoList[1]?.privateoutN }}</td>
+                        <td>{{ data.actualInfoList[1]?.overtimerestN }}</td>
+                        <td>{{ data.actualInfoList[1]?.workinplanN }}</td>
+                        <td>{{ data.actualInfoList[1]?.workoverplanN }}</td>
+                        <td></td>
+                    </tr>
+                    <tr *ngIf=" data.actualInfoList?.length > 1" style="display: none;">
+                        <td colspan="15"></td>
+                    </tr>
+                </ng-template>
+            </tbody>
+            <tr class="header-footer-color">
+                <th></th>
+                <th></th>
+                <th>合計</th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th>{{privateoutNCount}}</th>
+                <th>{{overtimerestNConur}}</th>
+                <th>{{workinplanNConur}}</th>
+                <th>{{workoverplanNConur}}</th>
+                <th></th>
+            </tr>
+            <tr class="header-footer-color">
+                <th rowspan="2">対象</th>
+                <th rowspan="2">確定状況</th>
+                <th rowspan="2">日付</th>
+                <th rowspan="2">勤務計画</th>
+                <th>始業</th>
+                <th>終業</th>
+                <th>始業</th>
+                <th>状態</th>
+                <th>終業</th>
+                <th>状態</th>
+                <th rowspan="2">私用外出時間</th>
+                <th rowspan="2">残業内休憩時間</th>
+                <th rowspan="2">計画内時間</th>
+                <th rowspan="2">計画外時間</th>
+                <th rowspan="2">確定 区分</th>
+            </tr>
+            <tr class="header-footer-color">
+                <th colspan="2">スキャン</th>
+                <th colspan="4">勤務実績</th>
+            </tr>
+        </nz-table>
+    </div>
+</div>

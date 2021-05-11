@@ -1,3 +1,5 @@
 export const environment = {
-  production: true
+  production: true,
+  baseUrlForHr: "http://localhost:8080/",
+  baseUrlForMd: "http://localhost:8080/"
 };

@@ -1,0 +1,304 @@
+<nz-spin
+    [nzSpinning]="isSpinning || isSpinningCompany || isSpinningBusiness || isSpinningLargeArea || isSpinningSmallArea || isSpinningGroup || isSpinningBumon"
+    nzTip="Loading...">
+    <div>
+        <div class="condition-area error-area" *ngFor="let item of errorMessageInfoForOrganization | keyvalue">
+            <label>{{item.key}}：{{item.value}}</label>
+        </div>
+        <div class="condition-area error-area" *ngFor="let item of errorMessageInfoForCommodity | keyvalue">
+            <label>{{item.key}}：{{item.value}}</label>
+        </div>
+        <div class="condition-area error-area" *ngFor="let item of errorMessageInfo | keyvalue">
+            <label>{{item.key}}：{{item.value}}</label>
+        </div>
+        <div class="condition-area error-area" *ngFor="let item of errorMessageInfoForPerson | keyvalue">
+            <label>{{item.key}}：{{item.value}}</label>
+        </div>
+        <div class="condition-area">
+            <h4>商品部発注情報検索条件設定</h4>
+            <p>商品部が必要な発注情報を照会する為の検索条件を設定する</p>
+        </div>
+        <hr />
+        <div class="condition-area">
+            <h4>実施内容</h4>
+            <label nz-radio ngModel="true">発注情報条件設定</label>
+        </div>
+        <hr />
+        <div class="condition-area">
+            <form nz-form [formGroup]="mddxForm">
+                <div nz-row class="exportType-check">
+                    <!-- 出力区分① -->
+                    <nz-form-item>
+                        <nz-form-label [nzNoColon]="true" nz-col [nzSpan]="2" nzFor="exportType1">出力区分①
+                        </nz-form-label>
+                        <div nz-col [nzSpan]="4">
+                            <nz-form-control>
+                                <nz-checkbox-group [(ngModel)]="exportType1Options" formControlName="exportType1">
+                                </nz-checkbox-group>
+                            </nz-form-control>
+                        </div>
+                        <div class="exportType1-check" nz-col [nzSpan]="17">
+                            <span *ngIf="exportType1Validator()">出力区分①は、必須項目ですので、入力してください。</span>
+                        </div>
+                    </nz-form-item>
+                    <!-- 出力区分② -->
+                    <nz-form-item>
+                        <nz-form-label [nzNoColon]="true" nz-col [nzSpan]="2" nzFor="exportType2">出力区分②
+                        </nz-form-label>
+                        <nz-form-control nz-col [nzSpan]="21">
+                            <nz-radio-group formControlName="exportType2" (ngModelChange)="groupValidatorCheck($event)">
+                                <label nz-radio nzValue="0">商品表示</label>
+                                <label nz-radio nzValue="1">集計表示</label>
+                            </nz-radio-group>
+                        </nz-form-control>
+                    </nz-form-item>
+                    <!-- 出力区分③ -->
+                    <nz-form-item>
+                        <nz-form-label [nzNoColon]="true" nz-col [nzSpan]="2" nzFor="exportType3">出力区分③
+                        </nz-form-label>
+                        <nz-form-control nz-col [nzSpan]="21">
+                            <nz-radio-group formControlName="exportType3"
+                                (ngModelChange)="onExportType3Changed($event)">
+                                <label nz-radio nzValue="0">画面表示</label>
+                                <label nz-radio nzValue="1">CSV出力</label>
+                            </nz-radio-group>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <!-- 組織選択 -->
+                <div nz-row formGroupName="organization">
+                    <nz-form-label [nzNoColon]="true" nz-col [nzSpan]="2" class="boder-style">組織選択</nz-form-label>
+                    <div nz-col [nzSpan]="21">
+                        <!-- 会社 -->
+                        <nz-form-item class="nz-form-item-margin">
+                            <nz-form-label [nzSm]="2" [nzXs]="24" [nzNoColon]="true" nzFor="company">会社
+                            </nz-form-label>
+                            <nz-form-control [nzSm]="21" [nzXs]="24">
+                                <nz-select formControlName="company" [nzMaxTagCount]="3"
+                                    [nzMaxTagPlaceholder]="tagPlaceHolder" nzMode="multiple"
+                                    (ngModelChange)="onCompanySelected($event)" [nzShowArrow]="false">
+                                    <nz-option *ngFor="let item of companies | keyvalue"
+                                        [nzLabel]="item.key + ' ' + item.value" [nzValue]="item.key"></nz-option>
+                                </nz-select>
+                                <ng-template #tagPlaceHolder let-selectedList> 他 {{ selectedList.length }} 件選択済
+                                </ng-template>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <!-- 業態 -->
+                        <nz-form-item class="nz-form-item-margin">
+                            <nz-form-label [nzSm]="2" [nzXs]="24" [nzNoColon]="true" nzFor="businesstype">業態
+                            </nz-form-label>
+                            <nz-form-control [nzSm]="21" [nzXs]="24">
+                                <nz-select formControlName="businesstype" [nzMaxTagCount]="3"
+                                    [nzMaxTagPlaceholder]="tagPlaceHolder" nzMode="multiple"
+                                    (ngModelChange)="onBusinessTypeSelected($event)" [nzShowArrow]="false">
+                                    <nz-option *ngFor="let item of businesstypes | keyvalue"
+                                        [nzLabel]="item.key + ' ' + item.value" [nzValue]="item.key"></nz-option>
+                                </nz-select>
+                                <ng-template #tagPlaceHolder let-selectedList> 他 {{ selectedList.length }} 件選択済
+                                </ng-template>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <!-- 大エリア -->
+                        <nz-form-item class="nz-form-item-margin">
+                            <nz-form-label [nzSm]="2" [nzXs]="24" [nzNoColon]="true" nzFor="largearea">
+                                大エリア
+                            </nz-form-label>
+                            <nz-form-control [nzSm]="21" [nzXs]="24">
+                                <nz-select formControlName="largearea" [nzMaxTagCount]="3"
+                                    [nzMaxTagPlaceholder]="tagPlaceHolder" nzMode="multiple"
+                                    (ngModelChange)="onLargeAreasSelected($event)" [nzShowArrow]="false">
+                                    <nz-option *ngFor="let item of largeareas | keyvalue"
+                                        [nzLabel]="item.key + ' ' + item.value" [nzValue]="item.key"></nz-option>
+                                </nz-select>
+                                <ng-template #tagPlaceHolder let-selectedList> 他 {{ selectedList.length }} 件選択済
+                                </ng-template>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <!-- 小エリア -->
+                        <nz-form-item class="nz-form-item-margin">
+                            <nz-form-label [nzSm]="2" [nzXs]="24" [nzNoColon]="true" nzFor="smallarea">
+                                小エリア
+                            </nz-form-label>
+                            <nz-form-control [nzSm]="21" [nzXs]="24">
+                                <nz-select formControlName="smallarea" [nzMaxTagCount]="3"
+                                    [nzMaxTagPlaceholder]="tagPlaceHolder" nzMode="multiple"
+                                    (ngModelChange)="onSmallAreasSelected($event)" [nzShowArrow]="false">
+                                    <nz-option *ngFor="let item of smallareas | keyvalue"
+                                        [nzLabel]="item.key + ' ' + item.value" [nzValue]="item.key"></nz-option>
+                                </nz-select>
+                                <ng-template #tagPlaceHolder let-selectedList> 他 {{ selectedList.length }} 件選択済
+                                </ng-template>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <!-- 店舗 -->
+                        <nz-form-item>
+                            <nz-form-label [nzSm]="2" [nzXs]="24" [nzNoColon]="true" nzFor="gen">店舗
+                            </nz-form-label>
+                            <nz-form-control [nzSm]="21" [nzXs]="24">
+                                <nz-select formControlName="gen" [nzMaxTagCount]="3"
+                                    [nzMaxTagPlaceholder]="tagPlaceHolder" nzMode="multiple" [nzShowArrow]="false">
+                                    <nz-option *ngFor="let item of gens | keyvalue"
+                                        [nzLabel]="item.key + ' ' + item.value" [nzValue]="item.key"></nz-option>
+                                </nz-select>
+                                <ng-template #tagPlaceHolder let-selectedList> 他 {{ selectedList.length }} 件選択済
+                                </ng-template>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <!-- 店舗グループ -->
+                        <nz-form-item>
+                            <nz-form-label [nzSm]="2" [nzXs]="24" [nzNoColon]="true" nzFor="storegroup">
+                                店舗グループ
+                            </nz-form-label>
+                            <nz-form-control [nzSm]="21" [nzXs]="24">
+                                <nz-select formControlName="storegroup" [nzMaxTagCount]="3"
+                                    [nzMaxTagPlaceholder]="tagPlaceHolder" nzMode="multiple" [nzShowArrow]="false">
+                                    <nz-option *ngFor="let item of storegroups | keyvalue"
+                                        [nzLabel]="item.key + ' ' + item.value" [nzValue]="item.key"></nz-option>
+                                </nz-select>
+                                <ng-template #tagPlaceHolder let-selectedList> 他 {{ selectedList.length }} 件選択済
+                                </ng-template>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </div>
+                </div>
+                <!-- 商品選択 -->
+                <div nz-row formGroupName="commodity" class="commodity-select">
+                    <nz-form-label [nzNoColon]="true" nz-col [nzSpan]="2" class="boder-style">商品選択</nz-form-label>
+                    <div nz-col [nzSpan]="21">
+                        <!-- グループ -->
+                        <nz-form-item class="nz-form-item-margin">
+                            <nz-form-label [nzSm]="2" [nzXs]="24" [nzNoColon]="true" nzFor="group">グループ
+                            </nz-form-label>
+                            <nz-form-control [nzSm]="21" [nzXs]="24">
+                                <nz-select formControlName="group" [nzMaxTagCount]="3"
+                                    [nzMaxTagPlaceholder]="tagPlaceHolder" nzMode="multiple"
+                                    (ngModelChange)="onGroupSelected($event)" [nzShowArrow]="false">
+                                    <nz-option *ngFor="let item of groups | keyvalue"
+                                        [nzLabel]="item.key + ' ' + item.value" [nzValue]="item.key"></nz-option>
+                                </nz-select>
+                                <ng-template #tagPlaceHolder let-selectedList> 他 {{ selectedList.length }} 件選択済
+                                </ng-template>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <!-- 部門 -->
+                        <nz-form-item class="nz-form-item-margin">
+                            <nz-form-label [nzSm]="2" [nzXs]="24" [nzNoColon]="true" nzFor="bumon">部門
+                            </nz-form-label>
+                            <nz-form-control [nzSm]="21" [nzXs]="24">
+                                <nz-select formControlName="bumon" [nzMaxTagCount]="3"
+                                    [nzMaxTagPlaceholder]="tagPlaceHolder" nzMode="multiple"
+                                    (ngModelChange)="onBumonSelected($event)" [nzShowArrow]="false">
+                                    <nz-option *ngFor="let item of bumons | keyvalue"
+                                        [nzLabel]="item.key + ' ' + item.value" [nzValue]="item.key"></nz-option>
+                                </nz-select>
+                                <ng-template #tagPlaceHolder let-selectedList> 他 {{ selectedList.length }} 件選択済
+                                </ng-template>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <!-- カテゴリ -->
+                        <nz-form-item>
+                            <nz-form-label [nzSm]="2" [nzXs]="24" [nzNoColon]="true" nzFor="category">
+                                カテゴリ
+                            </nz-form-label>
+                            <nz-form-control [nzSm]="21" [nzXs]="24">
+                                <nz-select formControlName="category" [nzMaxTagCount]="3"
+                                    [nzMaxTagPlaceholder]="tagPlaceHolder" nzMode="multiple" [nzShowArrow]="false">
+                                    <nz-option *ngFor="let item of categories | keyvalue"
+                                        [nzLabel]="item.key + ' ' + item.value" [nzValue]="item.key"></nz-option>
+                                </nz-select>
+                                <ng-template #tagPlaceHolder let-selectedList> 他 {{ selectedList.length }} 件選択済
+                                </ng-template>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <!-- JANコード -->
+                        <nz-form-item>
+                            <nz-form-label [nzSm]="2" [nzXs]="24" [nzNoColon]="true" nzFor="jan">
+                                JANコード
+                            </nz-form-label>
+                            <nz-form-control [nzSm]="21" [nzXs]="24">
+                                <nz-select formControlName="jan" (nzOnSearch)="onJanCodeSelected($event)"
+                                    [nzMaxTagCount]="3" [nzMaxTagPlaceholder]="tagPlaceHolder" nzMode="multiple"
+                                    [nzShowArrow]="false" nzServerSearch>
+                                    <ng-container *ngFor="let item of jans | keyvalue">
+                                        <nz-option *ngIf="!isLoading" [nzLabel]="item.key + ' ' + item.value"
+                                            [nzValue]="item.key"></nz-option>
+                                    </ng-container>
+                                    <nz-option *ngIf="isLoading" nzDisabled nzCustomContent>
+                                        <i nz-icon nzType="loading" class="loading-icon"></i> Loading Data...
+                                    </nz-option>
+                                </nz-select>
+                                <ng-template #tagPlaceHolder let-selectedList> 他 {{ selectedList.length }} 件選択済
+                                </ng-template>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </div>
+                    <div class="group-check"  nz-col [nzSpan]="17">
+                        <span *ngIf="groupValidator">グループは、必須項目ですので、入力してください。</span>
+                    </div>
+                </div>
+                <!-- 期間選択 -->
+                <div nz-row formGroupName="duration" class="commodity-select">
+                    <nz-form-label [nzNoColon]="true" nz-col [nzSpan]="2" class="boder-style">期間選択</nz-form-label>
+                    <div nz-col [nzSpan]="21">
+                        <!-- 発注日-->
+                        <nz-form-item class="nz-form-item-margin">
+                            <nz-form-label [nzSm]="2" [nzXs]="24" [nzNoColon]="true">
+                                発注日
+                            </nz-form-label>
+                            <div class="date-flex" nz-col [nzSpan]="10">
+                                <nz-form-control>
+                                    <nz-date-picker [nzFormat]="dateFormat" formControlName="orderDateFrom">
+                                    </nz-date-picker>
+                                </nz-form-control>
+                                <span>～</span>
+                                <nz-form-control>
+                                    <nz-date-picker [nzFormat]="dateFormat" formControlName="orderDateTo">
+                                    </nz-date-picker>
+                                </nz-form-control>
+                            </div>
+                            <div nz-col [nzSpan]="12" class="date-check">
+                                <span *ngIf="orderDateValidator()">
+                                    発注日は、開始日～終了日の範囲が有効でありません。
+                                </span>
+                            </div>
+                        </nz-form-item>
+                        <!-- 納品日 -->
+                        <nz-form-item>
+                            <nz-form-label [nzSm]="2" [nzXs]="24" [nzNoColon]="true">
+                                納品日
+                            </nz-form-label>
+                            <div class="date-flex" nz-col [nzSpan]="10">
+                                <nz-form-control>
+                                    <nz-date-picker [nzFormat]="dateFormat" formControlName="deliveryDateFrom">
+                                    </nz-date-picker>
+                                </nz-form-control>
+                                <span>～</span>
+                                <nz-form-control>
+                                    <nz-date-picker [nzFormat]="dateFormat" formControlName="deliveryDateTo">
+                                    </nz-date-picker>
+                                </nz-form-control>
+                            </div>
+                            <div nz-col [nzSpan]="12" class="date-check">
+                                <span *ngIf="deliveryDateValidator()">
+                                    納品日は、開始日～終了日の範囲が有効でありません。
+                                </span>
+                            </div>
+                        </nz-form-item>
+                    </div>
+                </div>
+                <div>
+                    <nz-form-item>
+                        <nz-form-control [nzSpan]="23">
+                            <button nz-button nzType="default" class="nz-button" (click)="submitForm()"
+                                [disabled]="orderDateValidator() || deliveryDateValidator() || exportType1Validator()">確定</button>
+                            <button nz-button nzType="default" class="nz-button" *ngIf="csvExportButtonDisableFlag"
+                                (click)="csvExport()"
+                                [disabled]="orderDateValidator() || deliveryDateValidator() || exportType1Validator()">CSV出力</button>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </form>
+        </div>
+    </div>
+</nz-spin>
